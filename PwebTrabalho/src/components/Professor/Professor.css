@@ -1,0 +1,14 @@
+.professores-container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.professores-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.professores-container .btn-primary {
+  margin-bottom: 20px;
+}

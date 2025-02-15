@@ -1,0 +1,14 @@
+.disciplinas-container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.disciplinas-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.disciplinas-container .btn-primary {
+  margin-bottom: 20px;
+}
