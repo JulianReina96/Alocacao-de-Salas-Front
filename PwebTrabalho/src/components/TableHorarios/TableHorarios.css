@@ -3,4 +3,50 @@
     width: 80%; /* Defina a largura do contêiner para 80% */
     margin: 0 auto; /* Centralize o contêiner horizontalmente */
     margin-top: 30px;
-  }
+    margin-bottom: 20px;
+}
+
+.cell-green {
+  background-color: green !important;
+  color: white !important;
+  text-align: center;
+  vertical-align: middle;
+  position: relative;
+}
+
+.cell-red {
+  background-color: red !important;
+  color: white !important;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.text-center {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.aula-content {
+  position: relative;
+}
+
+.sala-tooltip {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Position the tooltip above the text */
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.aula-content:hover .sala-tooltip {
+  visibility: visible;
+  opacity: 1;
+}

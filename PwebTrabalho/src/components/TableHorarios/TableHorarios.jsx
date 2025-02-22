@@ -1,50 +1,54 @@
-import Table from 'react-bootstrap/Table';
-import './TableHorarios.css';
+import React from 'react';
+import { Table } from 'react-bootstrap';
+import './TableHorarios.css'; // Import the CSS file for styling
 
+const TableHorarios = ({ turno, horarios, aulas }) => {
+  const diasDaSemana = ['SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA'];
 
-function BasicExample() {
+  const getAulaForHorario = (dia, horario) => {
+    const aula = aulas.find(aula => aula.horario.diaDaSemana === dia && aula.horario.horaInicio === horario.horaInicio);
+    return aula ? (
+      <div className="aula-content">
+        <strong>{aula.disciplina.codigoTurma}</strong>
+        <br />
+        {aula.disciplina.nome}
+        <div className="sala-tooltip">{aula.sala.nome}</div>
+      </div>
+    ) : 'Nenhuma aula agendada';
+  };
+
+  const getCellClass = (dia, horario) => {
+    const aula = aulas.find(aula => aula.horario.diaDaSemana === dia && aula.horario.horaInicio === horario.horaInicio);
+    return aula ? 'cell-green' : 'cell-red';
+  };
+
   return (
     <div className="table-container">
+      <h2>{turno}</h2>
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>Vespertino</th>
-            <th>Segunda</th>
-            <th>Terça</th>
-            <th>Quarta</th>
-            <th>Quinta</th>
-            <th>Sexta</th>
-            <th>Sábado</th>
-            <th>Domingo</th>
+            <th>Horário</th>
+            {diasDaSemana.map(dia => (
+              <th key={dia}>{dia}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td colSpan={2}>Larry the Bird</td>
-            <td>@twitter</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td colSpan={2}>Larry the Bird</td>
-            <td>@twitter</td>
-          </tr>
+          {horarios.map(horario => (
+            <tr key={horario.horaInicio}>
+              <td>{horario.horaInicio} - {horario.horaFim}</td>
+              {diasDaSemana.map(dia => (
+                <td key={dia} className={`${getCellClass(dia, horario)} text-center`}>
+                  {getAulaForHorario(dia, horario)}
+                </td>
+              ))}
+            </tr>
+          ))}
         </tbody>
       </Table>
     </div>
   );
-}
+};
 
-export default BasicExample;
+export default TableHorarios;
