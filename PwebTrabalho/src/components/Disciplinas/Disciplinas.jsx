@@ -75,13 +75,18 @@ const Disciplinas = () => {
   };
 
   const handleSaveDisciplina = async () => {
-    if (!newDisciplina.nome || !newDisciplina.codigo) {
+    if (!newDisciplina.nome || !newDisciplina.codigo || !newDisciplina.professorId) {
       alert('Todos os campos são obrigatórios.');
       return;
     }
 
     if (!/^\d{2}$/.test(newDisciplina.codigo)) {
       alert('O código deve ser composto por 2 caracteres numéricos.');
+      return;
+    }
+
+    if (newDisciplina.professorId === '') {
+      alert('Selecione um professor.');
       return;
     }
 
@@ -92,7 +97,8 @@ const Disciplinas = () => {
       return;
     }
 
-    const disciplinaToSave = { ...newDisciplina, codigoTurma: formattedCodigo };
+    const disciplinaToSave = { ...newDisciplina, codigo: formattedCodigo, codigoTurma: formattedCodigo };
+    setNewDisciplina(disciplinaToSave); // Atualiza o estado com o código formatado
     console.log(disciplinaToSave);
 
     try {
@@ -194,6 +200,7 @@ const Disciplinas = () => {
                 as="select"
                 value={newDisciplina.professorId}
                 onChange={(e) => setNewDisciplina({ ...newDisciplina, professorId: parseInt(e.target.value) })}
+                required
               >
                 <option value="">Selecione um Professor</option>
                 {professores.map(professor => (
