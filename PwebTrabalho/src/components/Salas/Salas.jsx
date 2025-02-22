@@ -1,18 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
+import { HttpService } from '../../data/fetchers/HttpService';
 import './Salas.css';
 
 const Salas = () => {
-  const [salas, setSalas] = useState([
-    { id: 1, nome: 'Sala 101' },
-    { id: 2, nome: 'Sala 102' },
-    { id: 3, nome: 'Sala 103' },
-  ]);
+  const [salas, setSalas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [currentSala, setCurrentSala] = useState(null);
   const [newSala, setNewSala] = useState('');
   const [salaToDelete, setSalaToDelete] = useState(null);
+
+  const httpService = new HttpService();
+
+  useEffect(() => {
+    const fetchSalas = async () => {
+      try {
+        const response = await httpService.get('/sala');
+        setSalas(response.data);
+      } catch (error) {
+        console.error('There was an error fetching the salas!', error);
+      }
+    };
+
+    fetchSalas();
+  }, []);
 
   const handleShowModal = (sala) => {
     setCurrentSala(sala);
@@ -36,7 +48,7 @@ const Salas = () => {
     setSalaToDelete(null);
   };
 
-  const handleSaveSala = () => {
+  const handleSaveSala = async () => {
     if (!newSala) {
       alert('O nome da sala é obrigatório.');
       return;
@@ -47,17 +59,28 @@ const Salas = () => {
       return;
     }
 
-    if (currentSala) {
-      setSalas(salas.map(s => s.id === currentSala.id ? { ...s, nome: newSala } : s));
-    } else {
-      setSalas([...salas, { id: salas.length + 1, nome: newSala }]);
+    try {
+      if (currentSala) {
+        await httpService.put(`/sala/${currentSala.id}`, newSala);
+        setSalas(salas.map(s => s.id === currentSala.id ? { ...s, nome: newSala } : s));
+      } else {
+        const response = await httpService.post('/sala', newSala);
+        setSalas([...salas, response.data]);
+      }
+      handleCloseModal();
+    } catch (error) {
+      console.error('There was an error saving the sala!', error);
     }
-    handleCloseModal();
   };
 
-  const handleDeleteSala = () => {
-    setSalas(salas.filter(s => s.id !== salaToDelete.id));
-    handleCloseConfirmModal();
+  const handleDeleteSala = async () => {
+    try {
+      await httpService.delete(`/sala/${salaToDelete.id}`);
+      setSalas(salas.filter(s => s.id !== salaToDelete.id));
+      handleCloseConfirmModal();
+    } catch (error) {
+      console.error('There was an error deleting the sala!', error);
+    }
   };
 
   return (

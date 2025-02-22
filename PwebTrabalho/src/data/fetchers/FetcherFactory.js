@@ -25,29 +25,7 @@ export class FetcherFactory {
     this.httpService = new HttpService();
   }
 
-  /**
-   * @description Método para criar um fetcher de Esporte.
-   * @returns {EsporteFetcher} - O fetcher de Esporte criado.
-   */
-  createEsporteFetcher() {
-    return new EsporteFetcher(this.httpService);
-  }
-
-  /**
-   * @description Método para criar um fetcher de País.
-   * @returns {PaisFetcher} - O fetcher de País criado.
-   */
-  createPaisFetcher() {
-    return new PaisFetcher(this.httpService);
-  }
-
-  /**
-   * @description Método para criar um fetcher de Medalha
-   * @returns {MedalhaFetcher} - O fetcher de Medalha criado.
-   */
-  createMedalhaFetcher() {
-    return new MedalhaFetcher(this.httpService);
-  }
+  
 
   /**
    * @description Método para criar um fetcher de Login.

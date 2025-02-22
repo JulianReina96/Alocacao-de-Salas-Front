@@ -17,10 +17,10 @@ import axios from "axios";
 export class HttpService {
   
   constructor() {
-    this.baseURL = "http://localhost:8084/olympics-follow-api/";
+    this.baseURL = "http://localhost:8080/";
     this.headers = {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+      //"Authorization": `Bearer ${sessionStorage.getItem("token")}`,
     };
     this.client = axios.create({
       baseURL: this.baseURL,

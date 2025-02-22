@@ -1,18 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
+import { HttpService } from '../../data/fetchers/HttpService';
 import './Professor.css';
 
 const Professor = () => {
-  const [professores, setProfessores] = useState([
-    { id: 1, nome: 'João', disciplinas: ['Matemática', 'Física'] },
-    { id: 2, nome: 'Maria', disciplinas: ['Português', 'Literatura'] },
-    { id: 3, nome: 'Carlos', disciplinas: [] },
-  ]);
+  const [professores, setProfessores] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showDisciplinasModal, setShowDisciplinasModal] = useState(false);
   const [currentProfessor, setCurrentProfessor] = useState(null);
   const [newProfessor, setNewProfessor] = useState({ nome: '' });
   const [professorToDelete, setProfessorToDelete] = useState(null);
+  const [disciplinas, setDisciplinas] = useState([]);
+
+  const httpService = new HttpService();
+
+  const fetchProfessores = async () => {
+    try {
+      const response = await httpService.get('/professor');
+      setProfessores(response.data);
+    } catch (error) {
+      console.error('There was an error fetching the professores!', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfessores();
+  }, []);
 
   const handleShowModal = (professor) => {
     setCurrentProfessor(professor);
@@ -28,31 +41,44 @@ const Professor = () => {
 
   const handleShowDisciplinasModal = (professor) => {
     setCurrentProfessor(professor);
+    setDisciplinas(professor.disciplinas || []);
     setShowDisciplinasModal(true);
   };
 
   const handleCloseDisciplinasModal = () => {
     setShowDisciplinasModal(false);
     setCurrentProfessor(null);
+    setDisciplinas([]);
   };
 
-  const handleSaveProfessor = () => {
+  const handleSaveProfessor = async () => {
     if (!newProfessor.nome) {
       alert('O nome do professor é obrigatório.');
       return;
     }
 
-    if (currentProfessor) {
-      setProfessores(professores.map(p => p.id === currentProfessor.id ? { ...p, ...newProfessor } : p));
-    } else {
-      setProfessores([...professores, { id: professores.length + 1, ...newProfessor, disciplinas: [] }]);
+    try {
+      if (currentProfessor) {
+        await httpService.put(`/professor/${currentProfessor.id}`, newProfessor.nome);
+        setProfessores(professores.map(p => p.id === currentProfessor.id ? { ...p, nome: newProfessor.nome } : p));
+      } else {
+        await httpService.post('/professor', newProfessor.nome);
+        fetchProfessores(); // Recarrega a lista de professores após adicionar um novo professor
+      }
+      handleCloseModal();
+    } catch (error) {
+      console.error('There was an error saving the professor!', error);
     }
-    handleCloseModal();
   };
 
-  const handleDeleteProfessor = () => {
-    setProfessores(professores.filter(p => p.id !== professorToDelete.id));
-    setProfessorToDelete(null);
+  const handleDeleteProfessor = async () => {
+    try {
+      await httpService.delete(`/professor/${professorToDelete.id}`);
+      setProfessores(professores.filter(p => p.id !== professorToDelete.id));
+      setProfessorToDelete(null);
+    } catch (error) {
+      console.error('There was an error deleting the professor!', error);
+    }
   };
 
   return (
@@ -111,8 +137,8 @@ const Professor = () => {
         </Modal.Header>
         <Modal.Body>
           <ul>
-            {currentProfessor?.disciplinas.map((disciplina, index) => (
-              <li key={index}>{disciplina}</li>
+            {disciplinas.map((disciplina, index) => (
+              <li key={index}>{disciplina.nome}</li>
             ))}
           </ul>
         </Modal.Body>

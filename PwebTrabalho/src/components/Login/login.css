@@ -1,26 +1,35 @@
 .main-div-login {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   height: 100vh;
-  width: 100wh;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100vw;
 
   @media (max-width: 1200px) {
     flex-direction: column;
   }
 
   > .div-lottie-login {
-    width: 40%;
-    left: 0;
-    margin-right: 10rem;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 2rem; /* Ajuste a margem conforme necessário */
 
     @media (max-width: 1200px) {
       display: none;
     }
   }
 
-  > form {
-    width: 40%;
+  > .login-form {
+    flex: 1;
+    max-width: 400px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -31,7 +40,7 @@
     @media (max-width: 1200px) {
       width: 100%;
     }
-    
+
     > h1 {
       font-size: 2rem;
       margin-bottom: 2.5rem;
@@ -78,7 +87,7 @@
       }
     }
 
-    >.div-input-login:hover {
+    > .div-input-login:hover {
       border: 3px solid #3e9eff;
     }
 
@@ -94,15 +103,99 @@
       margin-top: 1rem;
       transition: 0.5s;
       max-width: 420px;
-      
 
       &:hover {
         box-shadow: 0 0 2px #0d84fa, 0 0 5px #0d84fa, 0 0 20px #0d84fa,
-        0 0 25px #0d84fa;
+          0 0 25px #0d84fa;
         transform: none;
       }
     }
   }
+}
+
+.div-lottie-login {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: max-content; /* Adiciona max-width: max-content */
+  margin-right: 2rem; /* Ajuste a margem conforme necessário */
+}
+
+.logo-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 200px; /* Ajuste o tamanho máximo da imagem conforme necessário */
+}
+
+.login-form {
+  flex: 1;
+  max-width: 400px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-form form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.login-form .form-group {
+  margin-bottom: 15px;
+}
+
+.login-form label {
+  margin-bottom: 5px;
+}
+
+.login-form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%; /* Ajusta a largura dos inputs */
+  box-sizing: border-box;
+}
+
+.login-form button {
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  width: 100%; /* Ajusta a largura do botão */
+  box-sizing: border-box;
+}
+
+.login-form button:hover {
+  background-color: #0056b3;
+}
+
+.div-input-login {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.div-input-login input {
+  flex: 1;
+}
+
+.div-input-login span {
+  margin-left: 10px;
+}
+
+.div-input-login svg {
+  fill: #b6b6b6;
+  height: 1rem; /* Reduz o tamanho dos ícones */
+  width: 1rem; /* Reduz o tamanho dos ícones */
 }
 
 .div-outros-metodos-login {
@@ -135,7 +228,7 @@
     }
   }
 
-  >button:hover {
+  > button:hover {
     box-shadow: none;
     transform: none;
     transition: 0.5s;
@@ -152,11 +245,12 @@
 }
 
 .signup-link {
-  margin: 10px;
+  margin-top: 10px;
 }
 
 .signup-link a {
-  margin: 10px;
+  color: #2d9ffc;
+  cursor: pointer;
 }
 
 svg {
