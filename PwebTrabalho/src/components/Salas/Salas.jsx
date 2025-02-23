@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
 import { HttpService } from '../../data/fetchers/HttpService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Salas.css';
 
 const Salas = () => {
@@ -50,26 +52,29 @@ const Salas = () => {
 
   const handleSaveSala = async () => {
     if (!newSala) {
-      alert('O nome da sala é obrigatório.');
+      toast.error('O nome da sala é obrigatório.');
       return;
     }
 
     if (salas.some(s => s.nome === newSala && s.id !== currentSala?.id)) {
-      alert('Já existe uma sala com esse nome.');
+      toast.error('Já existe uma sala com esse nome.');
       return;
     }
 
     try {
       if (currentSala) {
-        await httpService.put(`/sala/${currentSala.id}`, newSala);
+        await httpService.put(`/sala/${currentSala.id}`,  newSala );
         setSalas(salas.map(s => s.id === currentSala.id ? { ...s, nome: newSala } : s));
+        toast.success('Sala atualizada com sucesso.');
       } else {
-        const response = await httpService.post('/sala', newSala);
+        const response = await httpService.post('/sala',  newSala );
         setSalas([...salas, response.data]);
+        toast.success('Sala cadastrada com sucesso.');
       }
       handleCloseModal();
     } catch (error) {
       console.error('There was an error saving the sala!', error);
+      toast.error('Erro ao salvar a sala.');
     }
   };
 
@@ -78,8 +83,21 @@ const Salas = () => {
       await httpService.delete(`/sala/${salaToDelete.id}`);
       setSalas(salas.filter(s => s.id !== salaToDelete.id));
       handleCloseConfirmModal();
+      toast.success('Sala deletada com sucesso.');
     } catch (error) {
-      console.error('There was an error deleting the sala!', error);
+      if (error.response) {
+        // A resposta foi recebida, mas o servidor retornou um status de erro
+        console.error('There was an error deleting the sala!', error.response.data);
+        toast.error(`Erro ao deletar a sala: ${error.response.data.message}`);
+      } else if (error.request) {
+        // A requisição foi feita, mas nenhuma resposta foi recebida
+        console.error('No response received:', error.request);
+        toast.error('Erro ao deletar a sala: Nenhuma resposta recebida do servidor.');
+      } else {
+        // Algo aconteceu ao configurar a requisição que acionou um erro
+        console.error('Error', error.message);
+        toast.error(`Erro ao deletar a sala: ${error.message}`);
+      }
     }
   };
 
@@ -137,13 +155,16 @@ const Salas = () => {
           <Modal.Title>Confirmar Remoção</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Tem certeza que deseja remover a sala "{salaToDelete?.nome}"?
+          Tem certeza que deseja remover a sala "{salaToDelete?.nome}"?<br />
+          <strong>Todas as aulas</strong> associadas a essa sala também serão <strong>removidas</strong>.
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseConfirmModal}>Cancelar</Button>
           <Button variant="danger" onClick={handleDeleteSala}>Remover</Button>
         </Modal.Footer>
       </Modal>
+
+      <ToastContainer />
     </div>
   );
 };

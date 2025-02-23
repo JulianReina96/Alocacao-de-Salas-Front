@@ -7,6 +7,7 @@ import Aulas from "../Aulas/Aulas";
 import Disciplinas from "../Disciplinas/Disciplinas";
 import Salas from "../Salas/Salas";
 import Professor from "../Professor/Professor";
+import Register from "../Register/Register";
 
 
 function Rotas() {
@@ -15,6 +16,7 @@ function Rotas() {
       <Toaster position="top-right" />
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route
           path="*"
           element={

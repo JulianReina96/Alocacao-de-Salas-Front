@@ -3,11 +3,13 @@ import { Table } from 'react-bootstrap';
 import './TableHorarios.css'; // Import the CSS file for styling
 
 const TableHorarios = ({ turno, horarios, aulas }) => {
-  const diasDaSemana = ['SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA'];
+  const diasDaSemana = ['SEGUNDA', 'TERCA', 'QUARTA', 'QUINTA', 'SEXTA', 'SABADO', 'DOMINGO'];
 
   const getAulaForHorario = (dia, horario) => {
+    
     const aula = aulas.find(aula => aula.horario.diaDaSemana === dia && aula.horario.horaInicio === horario.horaInicio);
     return aula ? (
+      
       <div className="aula-content">
         <strong>{aula.disciplina.codigoTurma}</strong>
         <br />

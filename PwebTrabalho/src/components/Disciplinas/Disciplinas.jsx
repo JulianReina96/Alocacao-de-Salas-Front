@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
 import { HttpService } from '../../data/fetchers/HttpService';
 import { formatCodigo } from '../../utils';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Disciplinas.css';
 
 const Disciplinas = () => {
@@ -13,6 +15,7 @@ const Disciplinas = () => {
   const [currentDisciplina, setCurrentDisciplina] = useState(null);
   const [newDisciplina, setNewDisciplina] = useState({ nome: '', codigo: '', professorId: '' });
   const [disciplinaToDelete, setDisciplinaToDelete] = useState(null);
+  const [isProfessorDropdownDisabled, setIsProfessorDropdownDisabled] = useState(false);
 
   const httpService = new HttpService();
 
@@ -44,7 +47,9 @@ const Disciplinas = () => {
 
   const handleShowModal = (disciplina) => {
     setCurrentDisciplina(disciplina);
-    setNewDisciplina(disciplina ? { nome: disciplina.nome, codigo: disciplina.codigoTurma, professorId: disciplina.professor?.id || '' } : { nome: '', codigo: '', professorId: '' });
+    const codigo = disciplina ? disciplina.codigoTurma.slice(-2) : '';
+    setNewDisciplina(disciplina ? { nome: disciplina.nome, codigo, professorId: disciplina.professor?.id || '' } : { nome: '', codigo: '', professorId: '' });
+    setIsProfessorDropdownDisabled(!!disciplina?.professor);
     setShowModal(true);
   };
 
@@ -52,6 +57,7 @@ const Disciplinas = () => {
     setShowModal(false);
     setCurrentDisciplina(null);
     setNewDisciplina({ nome: '', codigo: '', professorId: '' });
+    setIsProfessorDropdownDisabled(false);
   };
 
   const handleShowConfirmModal = (disciplina) => {
@@ -76,42 +82,44 @@ const Disciplinas = () => {
 
   const handleSaveDisciplina = async () => {
     if (!newDisciplina.nome || !newDisciplina.codigo || !newDisciplina.professorId) {
-      alert('Todos os campos são obrigatórios.');
+      toast.error('Todos os campos são obrigatórios.');
       return;
     }
 
     if (!/^\d{2}$/.test(newDisciplina.codigo)) {
-      alert('O código deve ser composto por 2 caracteres numéricos.');
+      toast.error('O código deve ser composto por 2 caracteres numéricos.');
       return;
     }
 
     if (newDisciplina.professorId === '') {
-      alert('Selecione um professor.');
+      toast.error('Selecione um professor.');
       return;
     }
 
     const formattedCodigo = formatCodigo(newDisciplina);
 
     if (disciplinas.some(d => d.codigoTurma === formattedCodigo && d.id !== currentDisciplina?.id)) {
-      alert('O código informado já está em uso.');
+      toast.error('O código informado já está em uso.');
       return;
     }
 
     const disciplinaToSave = { ...newDisciplina, codigo: formattedCodigo, codigoTurma: formattedCodigo };
-    setNewDisciplina(disciplinaToSave); // Atualiza o estado com o código formatado
+setNewDisciplina(disciplinaToSave); // Atualiza o estado com o código formatado
     console.log(disciplinaToSave);
 
     try {
       if (currentDisciplina) {
         await httpService.put(`/disciplina/${currentDisciplina.id}`, disciplinaToSave);
-        setDisciplinas(disciplinas.map(d => d.id === currentDisciplina.id ? { ...d, ...disciplinaToSave } : d));
+        toast.success('Disciplina atualizada com sucesso.');
       } else {
         await httpService.post('/disciplina', disciplinaToSave);
-        fetchDisciplinas(); // Recarrega a lista de disciplinas após adicionar uma nova disciplina
+        toast.success('Disciplina cadastrada com sucesso.');
       }
+      fetchDisciplinas(); // Recarrega a lista de disciplinas após adicionar ou editar uma disciplina
       handleCloseModal();
     } catch (error) {
       console.error('There was an error saving the disciplina!', error);
+      toast.error('Erro ao salvar a disciplina.');
     }
   };
 
@@ -120,18 +128,23 @@ const Disciplinas = () => {
       await httpService.delete(`/disciplina/${disciplinaToDelete.id}`);
       setDisciplinas(disciplinas.filter(d => d.id !== disciplinaToDelete.id));
       handleCloseConfirmModal();
+      toast.success('Disciplina deletada com sucesso.');
     } catch (error) {
       console.error('There was an error deleting the disciplina!', error);
+      toast.error('Erro ao deletar a disciplina.');
     }
   };
 
   const handleRemoveProfessor = async () => {
     try {
-      await httpService.put(`/disciplina/${currentDisciplina.id}`, { ...currentDisciplina, professorId: null });
+      console.log('Removing professor from disciplina:', currentDisciplina.professor.id);
+      await httpService.delete(`disciplina/professor/${currentDisciplina.id}`);
       setDisciplinas(disciplinas.map(d => d.id === currentDisciplina.id ? { ...d, professor: null } : d));
       handleCloseRemoveProfessorModal();
+      toast.success('Professor removido com sucesso.');
     } catch (error) {
       console.error('There was an error removing the professor from the disciplina!', error);
+      toast.error('Erro ao remover o professor.');
     }
   };
 
@@ -201,6 +214,7 @@ const Disciplinas = () => {
                 value={newDisciplina.professorId}
                 onChange={(e) => setNewDisciplina({ ...newDisciplina, professorId: parseInt(e.target.value) })}
                 required
+                disabled={isProfessorDropdownDisabled}
               >
                 <option value="">Selecione um Professor</option>
                 {professores.map(professor => (
@@ -222,6 +236,7 @@ const Disciplinas = () => {
         </Modal.Header>
         <Modal.Body>
           Tem certeza que deseja remover a disciplina "{disciplinaToDelete?.nome}"?
+          <br/> <strong>Todas as aulas</strong> agendadas serão <strong>canceladas</strong>.
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseConfirmModal}>Cancelar</Button>
@@ -241,6 +256,8 @@ const Disciplinas = () => {
           <Button variant="danger" onClick={handleRemoveProfessor}>Remover</Button>
         </Modal.Footer>
       </Modal>
+
+      <ToastContainer />
     </div>
   );
 };

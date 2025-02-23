@@ -24,6 +24,7 @@ const Home = () => {
   const fetchAulas = async () => {
     try {
       const response = await httpService.get('/aula');
+      console.log(response.data);
       setAulas(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('There was an error fetching the aulas!', error);

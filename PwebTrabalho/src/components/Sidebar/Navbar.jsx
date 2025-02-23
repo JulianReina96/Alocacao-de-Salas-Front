@@ -1,15 +1,19 @@
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/ifbaLogo.png'; // Certifique-se de ajustar o caminho para a sua imagem
+import { useNavigate } from 'react-router-dom';
 
 function BasicExample() {
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     // Adicione a lógica de logout aqui
+
     console.log("Logout");
+    navigate('/login'); // Redireciona para a página de login
   };
 
   return (

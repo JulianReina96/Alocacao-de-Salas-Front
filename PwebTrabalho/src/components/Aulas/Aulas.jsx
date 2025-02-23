@@ -229,7 +229,7 @@ if (aula) {
                 required
               >
                 <option value="">Selecione a Disciplina</option>
-                {disciplinas.map(disciplina => (
+                {disciplinas.filter(disciplina => disciplina.professor).map(disciplina => (
                   <option key={disciplina.id} value={disciplina.id}>{disciplina.nome}</option>
                 ))}
               </Form.Control>
