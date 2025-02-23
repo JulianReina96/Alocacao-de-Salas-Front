@@ -10,6 +10,8 @@ function BasicExample() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    
+    sessionStorage.clear();
     // Adicione a lógica de logout aqui
 
     console.log("Logout");

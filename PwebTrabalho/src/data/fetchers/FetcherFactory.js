@@ -2,6 +2,7 @@ import { HttpService } from "./HttpService";
 import { LoginFetcher } from "./login";
 import { RegisterFetcher } from "./Register";
 import {UserFetcher} from "./userFetcher.js";
+import {sendEmailFetcher} from "./sendEmailFetcher.js";
 
 /**
  * @description Classe FetcherFactory para criar instâncias de diferentes fetchers.
@@ -49,5 +50,13 @@ export class FetcherFactory {
    */
   createUserFetcher(){
     return new UserFetcher(this.httpService);
+  }
+
+  /**
+   * @description Método para criar um fetcher de Usuário.
+   * @returns {sendEmailFetcher} - O fetcher de Usuário criado.
+   */
+  createEmailFetcher(){
+    return new sendEmailFetcher(this.httpService);
   }
 }

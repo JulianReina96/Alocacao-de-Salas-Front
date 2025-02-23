@@ -8,6 +8,7 @@ import Disciplinas from "../Disciplinas/Disciplinas";
 import Salas from "../Salas/Salas";
 import Professor from "../Professor/Professor";
 import Register from "../Register/Register";
+import ProtectedRoute from "../ProtectedRoute";
 
 
 function Rotas() {
@@ -24,12 +25,12 @@ function Rotas() {
                 <Navbar />
               <div className="content">
                 <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/home" element={<Home />} />
-                  <Route path="/Aulas" element={<Aulas />} />
-                  <Route path="/Disciplinas" element={<Disciplinas />} />
-                  <Route path="/Salas" element={<Salas />} />
-                  <Route path="/Professor" element={<Professor />} />
+                  <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                  <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                  <Route path="/Aulas" element={<ProtectedRoute><Aulas /></ProtectedRoute>} />
+                  <Route path="/Disciplinas" element={<ProtectedRoute><Disciplinas /></ProtectedRoute>} />
+                  <Route path="/Salas" element={<ProtectedRoute><Salas /></ProtectedRoute>} />
+                  <Route path="/Professor" element={<ProtectedRoute><Professor /></ProtectedRoute>} />
                   {/* Adicione mais rotas conforme necessário */}
                 </Routes>
               </div>

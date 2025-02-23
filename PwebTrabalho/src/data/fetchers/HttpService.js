@@ -17,11 +17,12 @@ import axios from "axios";
 export class HttpService {
   
   constructor() {
-    this.baseURL = "http://localhost:8080/";
+    this.baseURL = "http://192.168.15.8:8082/alocasalas"; // URL base da API (localhost)
     this.headers = {
       "Content-Type": "application/json",
-      //"Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+      "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
     };
+    
     this.client = axios.create({
       baseURL: this.baseURL,
       headers: this.headers,
@@ -66,11 +67,11 @@ export class HttpService {
     }
   }
 
-  async login(url, email, password) {
+  async login(url, login, senha) {
     try {
       const response = await this.client.post(url, {
-        email,
-        password,
+        login,
+        senha,
       });
       console.log(response)
       return response;

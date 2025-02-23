@@ -7,6 +7,9 @@ import { motion } from "framer-motion";
 import imgLogo from "../../assets/ifbaLogo.png";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { RegisterFetcher } from "../../data/fetchers/Register";
+import { sendEmailFetcher } from "../../data/fetchers/sendEmailFetcher";
+import { HttpService } from '../../data/fetchers/HttpService';
 
 /**
  * Componente Register.
@@ -34,15 +37,20 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const httpService = new HttpService();
 
   const handleSubmit = async (setIsLoading) => {
     setIsLoading(true);
 
     // Validação de campos obrigatórios
     if (!register.nome || !register.email || !register.password || !register.confirmPassword) {
-      console.log("oi");
       toast.error("Todos os campos são obrigatórios.");
-      console.log("tchau");
+      setIsLoading(false);
+      return;
+    }
+
+    if(register.password.length < 4) {
+      toast.error("A senha deve ter no mínimo 4 caracteres.");
       setIsLoading(false);
       return;
     }
@@ -62,12 +70,38 @@ const Register = () => {
       return;
     }
 
-    // Adicione aqui a lógica para enviar os dados de registro para o servidor
-    // Exemplo:
-    // await httpService.post('/register', register);
+    // Construir o objeto de dados de registro
+    const userData = {
+      id: 0,
+      nome: register.nome,
+      email: register.email,
+      senha: register.password,
+      roles: [
+        {
+          id: 1,
+          role: "ROLE_ADMIN"
+        }
+      ]
+    };
 
-    setIsLoading(false);
-    navigate('/login');
+    try {
+      const response = await httpService.post('/usuario', userData);
+      console.log("tchau");
+      console.log(response);
+      if(response.status === 201) {
+      console.log("entrou");
+      const emailFetcher = new sendEmailFetcher(httpService);
+    const response =  await emailFetcher.sendEmail(userData);
+      console.log(response);
+      console.log("tchau");
+    }
+     toast.success("Registrado com sucesso. Verifique seu email para mais informações!");
+     setIsLoading(false);      
+      navigate('/login');
+    } catch (error) {
+      toast.error("Erro ao registrar. Tente novamente.");
+      setIsLoading(false);
+    }
   };
 
   return (

@@ -44,35 +44,36 @@ export const useLogin = () => {
 
   const handleSubmit = async (setIsLoading) => {
     validateCredentials();
-    if(isValidCredentials) {
-      setIsLoading(true)
-      //const loginFetcher = fetcherFactory.createLoginFetcher();
-      // const response = await loginFetcher.login(login.email, login.password);
-      const response = {
-        headers: {
-            'authorization': 'fake-token',
-            'userid': 'fake-user-id'
+    if (isValidCredentials) {
+      setIsLoading(true);
+      const loginFetcher = fetcherFactory.createLoginFetcher();
+      try {
+        const response = await loginFetcher.login(login.email, login.password);
+        console.log("Response received:", response);
+
+        setIsLoading(false);
+        if (response.response && response.response.status === 401) {
+          console.log("Login inválido");
+          toast.error("Login inválido", {
+            style: styleToastError,
+            duration: 3000,
+          });
+          return;
         }
-    };
-      setIsLoading(false)
-      if(response.response && response.response.status === 401){
-        toast.error("Login inválido", {
+
+        const token = response.data.token;        
+        sessionStorage.setItem("token", token);
+        handleToken(token);
+        if (token) {
+          navigate("/home");
+        }
+      } catch (error) {
+        console.error("Erro ao fazer login:", error);
+        toast.error("Erro ao fazer login. Tente novamente.", {
           style: styleToastError,
           duration: 3000,
         });
-        return;
-      }
-      let token = handleToken(response.headers['authorization']);
-      token = "Bearer " + "fake-token";
-      let userID = response.headers['userid'];
-      console.log(token);
-      console.log(userID);
-      sessionStorage.setItem("token", token);
-      sessionStorage.setItem("userID", userID);
-
-      
-      if (token) {
-        navigate("/home");
+        setIsLoading(false);
       }
     }
   };
