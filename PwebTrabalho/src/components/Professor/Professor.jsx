@@ -3,6 +3,10 @@ import { Table, Button, Modal, Form } from 'react-bootstrap';
 import { HttpService } from '../../data/fetchers/HttpService';
 import './Professor.css';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Toaster } from 'sonner';
+
 const Professor = () => {
   const [professores, setProfessores] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -53,7 +57,7 @@ const Professor = () => {
 
   const handleSaveProfessor = async () => {
     if (!newProfessor.nome) {
-      alert('O nome do professor é obrigatório.');
+      toast.error('O nome do professor é obrigatório.');
       return;
     }
 
@@ -61,9 +65,11 @@ const Professor = () => {
       if (currentProfessor) {
         await httpService.put(`/professor/${currentProfessor.id}`, newProfessor.nome);
         setProfessores(professores.map(p => p.id === currentProfessor.id ? { ...p, nome: newProfessor.nome } : p));
+        toast.success("Professor editado com sucesso!");
       } else {
         await httpService.post('/professor', newProfessor.nome);
-        fetchProfessores(); // Recarrega a lista de professores após adicionar um novo professor
+        fetchProfessores();
+        toast.success("Professor adicionado com sucesso!"); // Recarrega a lista de professores após adicionar um novo professor
       }
       handleCloseModal();
     } catch (error) {
@@ -76,13 +82,18 @@ const Professor = () => {
       await httpService.delete(`/professor/${professorToDelete.id}`);
       setProfessores(professores.filter(p => p.id !== professorToDelete.id));
       setProfessorToDelete(null);
+      toast.success("Professor removido com sucesso!");
     } catch (error) {
-      console.error('There was an error deleting the professor!', error);
+      toast.error('There was an error deleting the professor!', error);
     }
   };
 
   return (
+    
+    
     <div className="professores-container">
+      <Toaster position="top-right" />
+      <ToastContainer />
       <h1>Professores Cadastrados</h1>
       <Button variant="primary" onClick={() => handleShowModal(null)}>Cadastrar Novo Professor</Button>
       <Table striped bordered hover className="mt-3">

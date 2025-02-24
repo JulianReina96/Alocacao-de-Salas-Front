@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Toaster } from "sonner";
+import { Toaster } from "sonner"; 
 import { useState } from "react";
 import { Loader } from "../loader/Loader.jsx";
 import "./register.css";
@@ -9,7 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { RegisterFetcher } from "../../data/fetchers/Register";
 import { sendEmailFetcher } from "../../data/fetchers/sendEmailFetcher";
-import { HttpService } from '../../data/fetchers/HttpService';
+import { HttpServiceNoAuth } from '../../data/fetchers/HttpServiceNoAuth.js';
 
 /**
  * Componente Register.
@@ -37,7 +37,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const httpService = new HttpService();
+  const httpService = new HttpServiceNoAuth();
 
   const handleSubmit = async (setIsLoading) => {
     setIsLoading(true);
@@ -85,19 +85,24 @@ const Register = () => {
     };
 
     try {
-      const response = await httpService.post('/usuario', userData);
+      const response = await httpService.post('alocasalas/usuario', userData);
       console.log("tchau");
       console.log(response);
       if(response.status === 201) {
-      console.log("entrou");
-      const emailFetcher = new sendEmailFetcher(httpService);
-    const response =  await emailFetcher.sendEmail(userData);
-      console.log(response);
-      console.log("tchau");
-    }
-     toast.success("Registrado com sucesso. Verifique seu email para mais informações!");
-     setIsLoading(false);      
-      navigate('/login');
+        console.log("entrou");
+        const emailFetcher = new sendEmailFetcher();
+        const emailResponse = await emailFetcher.sendEmail(userData);
+        console.log(emailResponse);
+        console.log("tchau");
+        toast.success("Registrado com sucesso. Verifique seu email para mais informações!");
+        setIsLoading(false);
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000); // Espera de 2 segundos antes de redirecionar
+      } else {
+        toast.error("Erro ao registrar. Tente novamente.");
+        setIsLoading(false);
+      }
     } catch (error) {
       toast.error("Erro ao registrar. Tente novamente.");
       setIsLoading(false);
@@ -106,8 +111,8 @@ const Register = () => {
 
   return (
     <>
-         <Toaster position="top-right" />
-         <ToastContainer />
+      <Toaster position="top-right" />
+      <ToastContainer />
       <div className="main-div-login">
         <motion.div
           className="div-lottie-login"
@@ -146,7 +151,7 @@ const Register = () => {
               animate={{ x: 0 }}
               transition={{ duration: 0.4, delay: 0.25 }}
             >
-              
+              {/* Mensagem opcional */}
             </motion.p>
             <motion.div
               className="div-outros-metodos-login"
@@ -154,7 +159,7 @@ const Register = () => {
               animate={{ x: 0 }}
               transition={{ duration: 0.4, delay: 0.3 }}
             >
-              
+              {/* Outros métodos de login */}
             </motion.div>
             <motion.div
               className="div-input-login"

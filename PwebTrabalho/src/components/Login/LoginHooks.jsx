@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { styleToastError } from "../../styles.js";
 import {handleToken} from "../../utils.js";
+import { HttpServiceNoAuth } from "../../data/fetchers/HttpServiceNoAuth.js";
 
 const fetcherFactory = new FetcherFactory();
-
+const httpServiceNoAuth = new HttpServiceNoAuth();
 /**
  * Custom Hook - useLogin.
  * 
@@ -24,6 +25,7 @@ export const useLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [isValidCredentials, setIsValidCredentials] = useState(true);
+  
 
   const validateCredentials = () => {
     if (login.email === "" || !login.email.includes("@")) {
@@ -48,7 +50,8 @@ export const useLogin = () => {
       setIsLoading(true);
       const loginFetcher = fetcherFactory.createLoginFetcher();
       try {
-        const response = await loginFetcher.login(login.email, login.password);
+        const response = await httpServiceNoAuth.login("alocasalas/login", login.email, login.password);
+        
         console.log("Response received:", response);
 
         setIsLoading(false);
