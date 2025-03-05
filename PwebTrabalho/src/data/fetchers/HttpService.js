@@ -18,7 +18,7 @@ export class HttpService {
   
   constructor() {
     // this.baseURL = "http://192.168.15.8:8082/alocasalas"; // URL base da API (localhost) DESKTOP
-    this.baseURL = "http://172.18.112.1:8082/alocasalas"; // URL base da API (localhost) NOTEBOOK
+    this.baseURL = "http://172.17.96.1:8082/alocasalas"; // URL base da API (localhost) NOTEBOOK
     this.headers = {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${sessionStorage.getItem("token")}`,

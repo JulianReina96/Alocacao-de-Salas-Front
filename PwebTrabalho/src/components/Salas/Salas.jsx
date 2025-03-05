@@ -66,7 +66,7 @@ const Salas = () => {
         await httpService.put(`/sala/${currentSala.id}`,  newSala );
         setSalas(salas.map(s => s.id === currentSala.id ? { ...s, nome: newSala } : s));
         toast.success('Sala atualizada com sucesso.');
-      } else {
+      } else {        
         const response = await httpService.post('/sala',  newSala );
         setSalas([...salas, response.data]);
         toast.success('Sala cadastrada com sucesso.');
@@ -108,7 +108,7 @@ const Salas = () => {
       <Table striped bordered hover className="mt-3">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>Codigo</th>
             <th>Nome</th>
             <th>Ações</th>
           </tr>

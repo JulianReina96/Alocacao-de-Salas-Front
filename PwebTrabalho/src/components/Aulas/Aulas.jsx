@@ -173,7 +173,7 @@ if (aula) {
       <Table striped bordered hover className="mt-3">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>Codigo</th>
             <th>Disciplina</th>
             <th>Professor</th>
             <th>Sala</th>

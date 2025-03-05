@@ -155,7 +155,7 @@ setNewDisciplina(disciplinaToSave); // Atualiza o estado com o código formatado
       <Table striped bordered hover className="mt-3">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>Codigo</th>
             <th>Nome</th>
             <th>Código</th>
             <th>Professor</th>

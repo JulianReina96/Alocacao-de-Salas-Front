@@ -99,7 +99,7 @@ const Professor = () => {
       <Table striped bordered hover className="mt-3">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>Codigo Professor</th>
             <th>Nome</th>
             <th>Ações</th>
           </tr>
