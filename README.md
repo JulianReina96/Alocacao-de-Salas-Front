@@ -97,4 +97,4 @@ Se você tiver alguma dúvida ou sugestão, sinta-se à vontade para entrar em c
 
 Nome: Julian Reina
 Email: julianreina@gmail.com
-GitHub: github.com/seu-usuario
+GitHub: github.com/julianreina96
